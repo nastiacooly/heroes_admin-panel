@@ -4,6 +4,7 @@ const initialState = {
 	heroCreatingStatus: "idle",
 	filtersFetchStatus: "idle",
 	filters: [],
+	activeFilter: "all",
 };
 
 const reducer = (state = initialState, action) => {
@@ -45,6 +46,11 @@ const reducer = (state = initialState, action) => {
 			return {
 				...state,
 				filtersFetchingStatus: "loading",
+			};
+		case "FILTER_APPLY":
+			return {
+				...state,
+				activeFilter: action.payload,
 			};
 		case "HERO_DELETE":
 			const updated_heroes = state.heroes.filter(

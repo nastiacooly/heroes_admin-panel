@@ -49,3 +49,10 @@ export const heroDelete = (heroId) => {
 		payload: heroId,
 	};
 };
+
+export const filterApply = (filterValue) => {
+	return {
+		type: "FILTER_APPLY",
+		payload: filterValue,
+	};
+};

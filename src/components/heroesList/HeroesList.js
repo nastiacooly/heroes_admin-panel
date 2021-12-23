@@ -11,7 +11,9 @@ import HeroesListItem from "../heroesListItem/HeroesListItem";
 import Spinner from "../spinner/Spinner";
 
 const HeroesList = () => {
-	const { heroes, heroesLoadingStatus } = useSelector((state) => state);
+	const { heroes, heroesLoadingStatus, activeFilter } = useSelector(
+		(state) => state
+	);
 	const dispatch = useDispatch();
 	const { request } = useHttp();
 
@@ -30,17 +32,24 @@ const HeroesList = () => {
 		return <h5 className="text-center mt-5">Ошибка загрузки</h5>;
 	}
 
-	const renderHeroesList = (arr) => {
-		if (arr.length === 0) {
+	const filterHeroesList = (heroes, activeFilter) => {
+		return activeFilter === "all"
+			? heroes
+			: heroes.filter(({ element }) => element === activeFilter);
+	};
+
+	const renderHeroesList = (heroes) => {
+		if (heroes.length === 0) {
 			return <h5 className="text-center mt-5">Героев пока нет</h5>;
 		}
 
-		return arr.map(({ id, ...props }) => {
+		return heroes.map(({ id, ...props }) => {
 			return <HeroesListItem key={id} id={id} {...props} />;
 		});
 	};
 
-	const elements = renderHeroesList(heroes);
+	const filteredHeroes = filterHeroesList(heroes, activeFilter);
+	const elements = renderHeroesList(filteredHeroes);
 	return <ul>{elements}</ul>;
 };
 
