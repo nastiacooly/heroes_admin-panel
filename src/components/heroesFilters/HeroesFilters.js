@@ -17,7 +17,6 @@ const HeroesFilters = () => {
 	};
 
 	const mapFiltersToButtons = (filters) => {
-		// ADD active class to button with chosen filter
 		return filters.map(({ value, rusValue, className }) => {
 			let classNames =
 				activeFilter === value ? `${className} active` : className;
