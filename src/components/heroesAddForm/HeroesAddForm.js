@@ -137,7 +137,7 @@ const HeroesAddForm = () => {
 							id="element"
 							placeholder="Я владею элементом"
 						>
-							<option value="" disabled selected>
+							<option value="" disabled defaultValue>
 								Я владею элементом...
 							</option>
 							{options}

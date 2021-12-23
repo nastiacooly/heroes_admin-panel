@@ -42,3 +42,10 @@ export const filtersFetching = () => {
 		type: "FILTERS_FETCHING",
 	};
 };
+
+export const heroDelete = (heroId) => {
+	return {
+		type: "HERO_DELETE",
+		payload: heroId,
+	};
+};

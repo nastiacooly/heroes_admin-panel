@@ -46,6 +46,14 @@ const reducer = (state = initialState, action) => {
 				...state,
 				filtersFetchingStatus: "loading",
 			};
+		case "HERO_DELETE":
+			const updated_heroes = state.heroes.filter(
+				({ id }) => id !== action.payload
+			);
+			return {
+				...state,
+				heroes: [...updated_heroes],
+			};
 		default:
 			return state;
 	}
