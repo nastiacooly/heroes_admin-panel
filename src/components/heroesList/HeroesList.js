@@ -1,6 +1,7 @@
 import { useHttp } from "../../hooks/http.hook";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { createSelector } from "reselect";
 
 import {
 	heroesFetching,
@@ -15,11 +16,18 @@ const HeroesList = () => {
 		(state) => state.heroes.heroesLoadingStatus
 	);
 
-	const filteredHeroes = useSelector(({ filters, heroes }) => {
-		return filters.activeFilter === "all"
-			? heroes.heroes
-			: heroes.heroes.filter(({ element }) => element === filters.activeFilter);
-	});
+	// Мемоизирует значения стейта и не вызывает перерендер, если указанные части стейта не менялись
+	const filteredHeroesSelector = createSelector(
+		(state) => state.filters.activeFilter,
+		(state) => state.heroes.heroes,
+		(activeFilter, heroes) => {
+			return activeFilter === "all"
+				? heroes
+				: heroes.filter(({ element }) => element === activeFilter);
+		}
+	);
+
+	const filteredHeroes = useSelector(filteredHeroesSelector);
 
 	const dispatch = useDispatch();
 	const { request } = useHttp();
