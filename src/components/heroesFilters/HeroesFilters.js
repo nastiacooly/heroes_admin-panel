@@ -4,7 +4,7 @@ import { filterApply } from "../../actions";
 
 const HeroesFilters = () => {
 	const { filters, filtersFetchingStatus, activeFilter } = useSelector(
-		(state) => state
+		(state) => state.filters
 	);
 	const dispatch = useDispatch();
 
@@ -17,11 +17,15 @@ const HeroesFilters = () => {
 	};
 
 	const mapFiltersToButtons = (filters) => {
-		return filters.map(({ value, rusValue, className }) => {
+		return filters.map(({ value, rusValue, className }, i) => {
 			let classNames =
 				activeFilter === value ? `${className} active` : className;
 			return (
-				<button className={classNames} onClick={() => onApplyFilter(value)}>
+				<button
+					key={i}
+					className={classNames}
+					onClick={() => onApplyFilter(value)}
+				>
 					{rusValue}
 				</button>
 			);

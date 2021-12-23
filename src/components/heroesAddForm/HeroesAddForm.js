@@ -16,8 +16,11 @@ import {
 import Spinner from "../spinner/Spinner";
 
 const HeroesAddForm = () => {
-	const { heroCreatingStatus, filters, filtersFetchingStatus } = useSelector(
-		(state) => state
+	const heroCreatingStatus = useSelector(
+		(state) => state.heroes.heroCreatingStatus
+	);
+	const { filters, filtersFetchingStatus } = useSelector(
+		(state) => state.filters
 	);
 	const dispatch = useDispatch();
 	const { request } = useHttp();

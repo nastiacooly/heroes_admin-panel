@@ -11,12 +11,14 @@ import HeroesListItem from "../heroesListItem/HeroesListItem";
 import Spinner from "../spinner/Spinner";
 
 const HeroesList = () => {
-	const heroesLoadingStatus = useSelector((state) => state.heroesLoadingStatus);
+	const heroesLoadingStatus = useSelector(
+		(state) => state.heroes.heroesLoadingStatus
+	);
 
-	const filteredHeroes = useSelector(({ activeFilter, heroes }) => {
-		return activeFilter === "all"
-			? heroes
-			: heroes.filter(({ element }) => element === activeFilter);
+	const filteredHeroes = useSelector(({ filters, heroes }) => {
+		return filters.activeFilter === "all"
+			? heroes.heroes
+			: heroes.heroes.filter(({ element }) => element === filters.activeFilter);
 	});
 
 	const dispatch = useDispatch();
