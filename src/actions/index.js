@@ -1,3 +1,17 @@
+export const fetchHeroes = (request) => (dispatch) => {
+	dispatch(heroesFetching());
+	request("http://localhost:3001/heroes")
+		.then((heroes) => dispatch(heroesFetched(heroes)))
+		.catch(() => dispatch(heroesFetchingError()));
+};
+
+export const fetchFilters = (request) => (dispatch) => {
+	dispatch(filtersFetching());
+	request("http://localhost:3001/filters")
+		.then((filters) => dispatch(filtersFetched(filters)))
+		.catch(() => dispatch(filtersFetchingError()));
+};
+
 export const heroesFetching = () => {
 	return {
 		type: "HEROES_FETCHING",
@@ -40,6 +54,12 @@ export const filtersFetched = (filters) => {
 export const filtersFetching = () => {
 	return {
 		type: "FILTERS_FETCHING",
+	};
+};
+
+export const filtersFetchingError = () => {
+	return {
+		type: "FILTERS_FETCHING_ERROR",
 	};
 };
 

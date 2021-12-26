@@ -6,12 +6,7 @@ import { useEffect } from "react";
 import { useHttp } from "../../hooks/http.hook";
 import { useSelector, useDispatch } from "react-redux";
 
-import {
-	filtersFetched,
-	filtersFetching,
-	heroCreate,
-	heroCreatingError,
-} from "../../actions";
+import { fetchFilters, heroCreate, heroCreatingError } from "../../actions";
 
 import Spinner from "../spinner/Spinner";
 
@@ -27,12 +22,7 @@ const HeroesAddForm = () => {
 
 	useEffect(() => {
 		// Fetching filters from DB on first render
-		dispatch(filtersFetching());
-		request("http://localhost:3001/filters")
-			.then((filters) => {
-				dispatch(filtersFetched(filters));
-			})
-			.catch((e) => console.log(e));
+		dispatch(fetchFilters(request));
 		// eslint-disable-next-line
 	}, []);
 
@@ -68,6 +58,12 @@ const HeroesAddForm = () => {
 
 	if (filtersFetchingStatus === "loading") {
 		return <Spinner />;
+	}
+
+	if (filtersFetchingStatus === "error") {
+		return (
+			<h5 className="text-center mt-5">Ошибка загрузки доступных фильтров</h5>
+		);
 	}
 
 	if (heroCreatingStatus === "error") {

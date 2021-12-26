@@ -17,6 +17,11 @@ const filtersReducer = (state = initialState, action) => {
 				...state,
 				filtersFetchingStatus: "loading",
 			};
+		case "FILTERS_FETCHING_ERROR":
+			return {
+				...state,
+				filtersFetchingStatus: "error",
+			};
 		case "FILTER_APPLY":
 			return {
 				...state,
