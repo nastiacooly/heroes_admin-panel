@@ -1,4 +1,4 @@
-import { createStore, combineReducers } from "redux";
+import { createStore, combineReducers, compose } from "redux";
 import { heroesReducer, filtersReducer } from "../reducers";
 
 const reducers = { heroes: heroesReducer, filters: filtersReducer };
@@ -21,8 +21,12 @@ const enhancer =
 		return store;
 	};
 
-const store = createStore(combineReducers(reducers), enhancer);
+const store = createStore(
+	combineReducers(reducers),
+	compose(
+		enhancer,
+		window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+	)
+);
 
 export default store;
-
-//window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
