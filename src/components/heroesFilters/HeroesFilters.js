@@ -1,6 +1,6 @@
 import { useSelector, useDispatch } from "react-redux";
 
-import { filterApply } from "../../actions";
+import { filterApply } from "../../components/heroesFilters/filtersSlice";
 
 const HeroesFilters = () => {
 	const { filters, filtersFetchingStatus, activeFilter } = useSelector(

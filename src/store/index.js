@@ -1,4 +1,5 @@
-import { heroesReducer, filtersReducer } from "../reducers";
+import filtersReducer from "../components/heroesFilters/filtersSlice";
+import heroesReducer from "../components/heroesList/heroesSlice";
 import { configureStore } from "@reduxjs/toolkit";
 
 const stringMiddleware = () => (next) => (action) => {

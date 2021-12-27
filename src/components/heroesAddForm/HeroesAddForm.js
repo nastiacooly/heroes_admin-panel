@@ -6,7 +6,11 @@ import { useEffect } from "react";
 import { useHttp } from "../../hooks/http.hook";
 import { useSelector, useDispatch } from "react-redux";
 
-import { fetchFilters, heroCreate, heroCreatingError } from "../../actions";
+import { fetchFilters } from "../../actions";
+import {
+	heroCreate,
+	heroCreatingError,
+} from "../../components/heroesList/heroesSlice";
 
 import Spinner from "../spinner/Spinner";
 
