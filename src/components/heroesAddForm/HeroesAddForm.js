@@ -6,7 +6,12 @@ import { useEffect } from "react";
 import { useHttp } from "../../hooks/http.hook";
 import { useSelector, useDispatch } from "react-redux";
 
-import { fetchFilters } from "../../components/heroesFilters/filtersSlice";
+import store from "../../store";
+
+import {
+	fetchFilters,
+	selectAll,
+} from "../../components/heroesFilters/filtersSlice";
 import {
 	heroCreate,
 	heroCreatingError,
@@ -18,9 +23,10 @@ const HeroesAddForm = () => {
 	const heroCreatingStatus = useSelector(
 		(state) => state.heroes.heroCreatingStatus
 	);
-	const { filters, filtersFetchingStatus } = useSelector(
-		(state) => state.filters
+	const filtersFetchingStatus = useSelector(
+		(state) => state.filters.filtersFetchingStatus
 	);
+	const filters = selectAll(store.getState());
 	const dispatch = useDispatch();
 	const { request } = useHttp();
 
