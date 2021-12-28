@@ -1,17 +1,7 @@
-import { useHttp } from "../../hooks/http.hook";
-import { useDispatch } from "react-redux";
-
-import { heroDelete } from "../../components/heroesList/heroesSlice";
+import { useDeleteHeroMutation } from "../../api/apiSlice";
 
 const HeroesListItem = ({ id, name, description, element }) => {
-	const dispatch = useDispatch();
-	const { request } = useHttp();
-
-	const onDelete = (id) => {
-		request(`http://localhost:3001/heroes/${id}`, "DELETE")
-			.then(() => dispatch(heroDelete(id)))
-			.catch((e) => console.log(e));
-	};
+	const [deleteHero] = useDeleteHeroMutation();
 
 	let elementClassName;
 
@@ -51,7 +41,7 @@ const HeroesListItem = ({ id, name, description, element }) => {
 					type="button"
 					className="btn-close btn-close"
 					aria-label="Close"
-					onClick={() => onDelete(id)}
+					onClick={() => deleteHero(id)}
 				></button>
 			</span>
 		</li>

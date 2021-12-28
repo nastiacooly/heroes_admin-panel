@@ -2,42 +2,24 @@ import { Formik, Field } from "formik";
 
 import { v4 as uuidv4 } from "uuid";
 
-import { useEffect } from "react";
-import { useHttp } from "../../hooks/http.hook";
-import { useSelector, useDispatch } from "react-redux";
-
-import store from "../../store";
-
-import {
-	fetchFilters,
-	selectAll,
-} from "../../components/heroesFilters/filtersSlice";
-import {
-	heroCreate,
-	heroCreatingError,
-} from "../../components/heroesList/heroesSlice";
+import { useMemo } from "react";
+import { useCreateHeroMutation, useGetFiltersQuery } from "../../api/apiSlice";
 
 import Spinner from "../spinner/Spinner";
 
 const HeroesAddForm = () => {
-	const heroCreatingStatus = useSelector(
-		(state) => state.heroes.heroCreatingStatus
-	);
-	const filtersFetchingStatus = useSelector(
-		(state) => state.filters.filtersFetchingStatus
-	);
-	const filters = selectAll(store.getState());
-	const dispatch = useDispatch();
-	const { request } = useHttp();
+	const [createHero, { isLoading, isError }] = useCreateHeroMutation();
+	const {
+		data: filters = [],
+		isLoading: isFiltersLoading,
+		isError: isFiltersError,
+	} = useGetFiltersQuery();
 
-	useEffect(() => {
-		// Fetching filters from DB on first render
-		dispatch(fetchFilters());
-		// eslint-disable-next-line
-	}, []);
-
-	const mapFiltersToSelectOptions = (filters) => {
-		return filters
+	const filterOptions = useMemo(() => {
+		// Copy of query data
+		const filtersToMap = filters.slice();
+		// Mapping filters
+		return filtersToMap
 			.filter(({ value }) => value !== "all")
 			.map(({ value, rusValue }, i) => {
 				return (
@@ -46,7 +28,7 @@ const HeroesAddForm = () => {
 					</option>
 				);
 			});
-	};
+	}, [filters]);
 
 	const onSubmit = (values, resetForm) => {
 		// Generating unique id for hero
@@ -58,29 +40,24 @@ const HeroesAddForm = () => {
 			description: values.description,
 			element: values.element,
 		};
-		const body = JSON.stringify(hero);
 		// Saving hero to DB and state (store)
-		request(`http://localhost:3001/heroes`, "POST", body)
-			.then((hero) => dispatch(heroCreate(hero)))
-			.catch(() => dispatch(heroCreatingError()))
-			.finally(() => resetForm());
+		createHero(hero).unwrap();
+		setTimeout(() => resetForm(), 1500);
 	};
 
-	if (filtersFetchingStatus === "loading") {
+	if (isFiltersLoading) {
 		return <Spinner />;
 	}
 
-	if (filtersFetchingStatus === "error") {
+	if (isFiltersError) {
 		return (
 			<h5 className="text-center mt-5">Ошибка загрузки доступных фильтров</h5>
 		);
 	}
 
-	if (heroCreatingStatus === "error") {
+	if (isError) {
 		return <h5 className="text-center mt-5">Ошибка создания героя</h5>;
 	}
-
-	const options = mapFiltersToSelectOptions(filters);
 
 	return (
 		<Formik
@@ -149,18 +126,22 @@ const HeroesAddForm = () => {
 							<option value="" disabled defaultValue>
 								Я владею элементом...
 							</option>
-							{options}
+							{filterOptions}
 						</Field>
 						{errors.element && touched.element && errors.element}
 					</div>
 
-					<button
-						type="submit"
-						className="btn btn-primary"
-						disabled={isSubmitting}
-					>
-						Создать
-					</button>
+					{isLoading ? (
+						<Spinner />
+					) : (
+						<button
+							type="submit"
+							className="btn btn-primary"
+							disabled={isSubmitting}
+						>
+							Создать
+						</button>
+					)}
 				</form>
 			)}
 		</Formik>

@@ -1,29 +1,23 @@
+import { useMemo, useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
-
-import store from "../../store";
-
-import {
-	filterApply,
-	selectAll,
-} from "../../components/heroesFilters/filtersSlice";
+import { useGetFiltersQuery } from "../../api/apiSlice";
+import { filterApply } from "./filtersSlice";
 
 const HeroesFilters = () => {
-	const { filtersFetchingStatus, activeFilter } = useSelector(
-		(state) => state.filters
-	);
-	const filters = selectAll(store.getState());
+	const { data: filters = [], isLoading } = useGetFiltersQuery();
+	const activeFilter = useSelector((state) => state.filters.activeFilter);
 	const dispatch = useDispatch();
 
-	if (filtersFetchingStatus === "loading") {
-		return null;
-	}
+	const onApplyFilter = useCallback(
+		(filterValue) => {
+			dispatch(filterApply(filterValue));
+		},
+		[dispatch]
+	);
 
-	const onApplyFilter = (filterValue) => {
-		dispatch(filterApply(filterValue));
-	};
-
-	const mapFiltersToButtons = (filters) => {
-		return filters.map(({ value, rusValue, className }, i) => {
+	const filterButtons = useMemo(() => {
+		const filtersToMap = filters.slice();
+		return filtersToMap.map(({ value, rusValue, className }, i) => {
 			let classNames =
 				activeFilter === value ? `${className} active` : className;
 			return (
@@ -36,15 +30,17 @@ const HeroesFilters = () => {
 				</button>
 			);
 		});
-	};
+	}, [filters, activeFilter, onApplyFilter]);
 
-	const buttons = mapFiltersToButtons(filters);
+	if (isLoading) {
+		return null;
+	}
 
 	return (
 		<div className="card shadow-lg mt-4">
 			<div className="card-body">
 				<p className="card-text">Отфильтруйте героев по элементам</p>
-				<div className="btn-group">{buttons}</div>
+				<div className="btn-group">{filterButtons}</div>
 			</div>
 		</div>
 	);
