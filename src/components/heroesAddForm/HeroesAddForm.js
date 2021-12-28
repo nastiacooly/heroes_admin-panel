@@ -6,7 +6,7 @@ import { useEffect } from "react";
 import { useHttp } from "../../hooks/http.hook";
 import { useSelector, useDispatch } from "react-redux";
 
-import { fetchFilters } from "../../actions";
+import { fetchFilters } from "../../components/heroesFilters/filtersSlice";
 import {
 	heroCreate,
 	heroCreatingError,
@@ -26,7 +26,7 @@ const HeroesAddForm = () => {
 
 	useEffect(() => {
 		// Fetching filters from DB on first render
-		dispatch(fetchFilters(request));
+		dispatch(fetchFilters());
 		// eslint-disable-next-line
 	}, []);
 
