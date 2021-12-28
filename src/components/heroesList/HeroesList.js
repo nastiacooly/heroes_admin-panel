@@ -1,25 +1,16 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { createSelector } from "@reduxjs/toolkit";
 
-import { fetchHeroes } from "../../components/heroesList/heroesSlice";
+import {
+	fetchHeroes,
+	filteredHeroesSelector,
+} from "../../components/heroesList/heroesSlice";
 import HeroesListItem from "../heroesListItem/HeroesListItem";
 import Spinner from "../spinner/Spinner";
 
 const HeroesList = () => {
 	const heroesLoadingStatus = useSelector(
 		(state) => state.heroes.heroesLoadingStatus
-	);
-
-	// Мемоизирует значения стейта и не вызывает перерендер, если указанные части стейта не менялись
-	const filteredHeroesSelector = createSelector(
-		(state) => state.filters.activeFilter,
-		(state) => state.heroes.heroes,
-		(activeFilter, heroes) => {
-			return activeFilter === "all"
-				? heroes
-				: heroes.filter(({ element }) => element === activeFilter);
-		}
 	);
 
 	const filteredHeroes = useSelector(filteredHeroesSelector);

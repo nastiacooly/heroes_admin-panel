@@ -1,11 +1,17 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import {
+	createSlice,
+	createAsyncThunk,
+	createEntityAdapter,
+	createSelector,
+} from "@reduxjs/toolkit";
 import { useHttp } from "../../hooks/http.hook";
 
-const initialState = {
-	heroes: [],
+const heroesAdapter = createEntityAdapter();
+
+const initialState = heroesAdapter.getInitialState({
 	heroesLoadingStatus: "idle",
 	heroCreatingStatus: "idle",
-};
+});
 
 export const fetchHeroes = createAsyncThunk("heroes/fetchHeroes", () => {
 	const { request } = useHttp();
@@ -17,14 +23,14 @@ const heroesSlice = createSlice({
 	initialState,
 	reducers: {
 		heroCreate: (state, action) => {
-			state.heroes.push(action.payload);
+			heroesAdapter.addOne(state, action.payload);
 			state.heroCreatingStatus = "idle";
 		},
 		heroCreatingError: (state) => {
 			state.heroCreatingStatus = "error";
 		},
 		heroDelete: (state, action) => {
-			state.heroes = state.heroes.filter(({ id }) => id !== action.payload);
+			heroesAdapter.removeOne(state, action.payload);
 		},
 	},
 	extraReducers: (builder) => {
@@ -34,7 +40,7 @@ const heroesSlice = createSlice({
 			})
 			.addCase(fetchHeroes.fulfilled, (state, action) => {
 				state.heroesLoadingStatus = "idle";
-				state.heroes = action.payload;
+				heroesAdapter.setAll(state, action.payload);
 			})
 			.addCase(fetchHeroes.rejected, (state) => {
 				state.heroesLoadingStatus = "error";
@@ -45,5 +51,18 @@ const heroesSlice = createSlice({
 
 const { actions, reducer: heroesReducer } = heroesSlice;
 export default heroesReducer;
+
+const { selectAll } = heroesAdapter.getSelectors((state) => state.heroes);
+
+// Мемоизирует значения стейта и не вызывает перерендер, если указанные части стейта не менялись
+export const filteredHeroesSelector = createSelector(
+	(state) => state.filters.activeFilter,
+	selectAll,
+	(activeFilter, heroes) => {
+		return activeFilter === "all"
+			? heroes
+			: heroes.filter(({ element }) => element === activeFilter);
+	}
+);
 
 export const { heroCreate, heroCreatingError, heroDelete } = actions;
